@@ -1,0 +1,29 @@
+// Firebase Firestore 보안 규칙 (프로덕션용)
+// Firebase Console → Firestore Database → 규칙 탭에 붙여넣기
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 사용자는 자신의 데이터만 읽기/쓰기 가능
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // 사용자의 roomSettings 컬렉션
+      match /roomSettings/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // 사용자의 furniture 컬렉션 (향후 추가용)
+      match /furniture/{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // 공개 스킨/아이템 데이터 (모든 사용자 읽기 가능, 관리자만 쓰기)
+    match /publicSkins/{document=**} {
+      allow read: if true;
+      allow write: if false; // 관리자 전용 (별도 설정 필요)
+    }
+  }
+}
