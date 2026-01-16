@@ -1,0 +1,21 @@
+* {
+  box-sizing: border-box;
+  font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+  font-weight: 400;
+}
+body {
+  background-color: var(--color-light-1);
+  word-wrap: break-word;
+  word-break: keep-all;
+  overflow: visible;
+  font-size: 16rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+

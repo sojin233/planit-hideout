@@ -1,0 +1,99 @@
+/* reset css */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  word-break: break-word;
+  -ms-word-break: break-word;
+  -webkit-text-size-adjust: none; /*모바일 가로보기시 글씨 크기 확대 방지*/
+}
+html,
+body {
+  font-size: 16px;
+  font-family: "Noto Sans KR", sans-serif !important;
+} /* 기본 폰트 크기 지정*/
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+form,
+fieldset,
+p,
+button,
+input,
+table {
+  margin: 0;
+  padding: 0;
+}
+html[lagn],
+body img,
+fieldset,
+iframe {
+  border: 0 none;
+}
+li {
+  list-style: none;
+}
+input,
+select,
+button {
+  vertical-align: middle;
+}
+i,
+em,
+address {
+  font-style: normal;
+}
+label,
+button {
+  cursor: pointer;
+}
+a,
+a:hover,
+a:focus,
+a:active {
+  text-decoration: none;
+}
+a {
+  color: #000;
+}
+label {
+  font-weight: normal;
+}
+button {
+  border: none;
+  background: none;
+}
+hr {
+  display: none;
+}
+legend {
+  width: 0;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+input,
+textarea,
+button {
+  -webkit-border-radius: 0;
+  border-radius: 0;
+}
+/* 모바일 webkit 브라우져에서 input 등 기본 속성 제거 */
+input:-internal-autofill-selected {
+  background: none;
+}
+/* select {-webkit-appearance: none; -moz-appearance: none; appearance: none;} */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  background: none;
+}
