@@ -16,6 +16,7 @@ Firebase는 JavaScript에서만 사용됩니다.
   - [ ] Platform: **WebGL** 선택
   - [ ] "Switch Platform" 클릭 (처음이라면)
   - [ ] Scenes In Build에 현재 씬 추가
+  // 테스트
 
 ---
 
