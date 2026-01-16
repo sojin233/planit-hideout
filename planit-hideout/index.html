@@ -1,45 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>방꾸미기 - Unity WebGL</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        #unity-container {
-            width: 960px;
-            height: 600px;
-            margin: 50px auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        #unity-canvas {
-            width: 100%;
-            height: 100%;
-        }
-
-        #loading {
-            text-align: center;
-            padding: 40px;
-            color: #667eea;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+      }
+      #unity-container {
+        width: 100%;
+       height: 100vh;
+        margin: 0;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+      #unity-canvas {
+        width: 100%;
+        height: 100%;
+      }
+      #loading {
+        text-align: center;
+        padding: 40px;
+        color: #667eea;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="unity-container">
-        <div id="loading">🎮 Unity 로딩 중...</div>
-        <canvas id="unity-canvas" width="960" height="600" style="display:none;"></canvas>
+      <div id="loading">🎮 Unity 로딩 중...</div>
+      <canvas id="unity-canvas" style="display: none"></canvas>
     </div>
 
     <!-- Firebase SDK -->
@@ -48,159 +43,171 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <script>
-        // ========================================
-        // Firebase 설정
-        // ========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyAM2Byx0gq7NiiNcpxaLNSlN7LCVQhqqBo",
-            authDomain: "planithideout.firebaseapp.com",
-            projectId: "planithideout",
-            storageBucket: "planithideout.firebasestorage.app",
-            messagingSenderId: "61513627379",
-            appId: "1:61513627379:web:cce336f83c13c90a016986",
-            measurementId: "G-T67KQM6V5G"
-        };
+      // ========================================
+      // Firebase 설정
+      // ========================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyAM2Byx0gq7NiiNcpxaLNSlN7LCVQhqqBo",
+        authDomain: "planithideout.firebaseapp.com",
+        projectId: "planithideout",
+        storageBucket: "planithideout.firebasestorage.app",
+        messagingSenderId: "61513627379",
+        appId: "1:61513627379:web:cce336f83c13c90a016986",
+        measurementId: "G-T67KQM6V5G",
+      };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      const auth = firebase.auth();
 
-        let userId = null;
-        auth.signInAnonymously().then((userCredential) => {
-            userId = userCredential.user.uid;
-            console.log("✅ Firebase 로그인 성공:", userId);
-        }).catch((error) => {
-            console.error("❌ Firebase 로그인 실패:", error);
+      let userId = null;
+      auth
+        .signInAnonymously()
+        .then((userCredential) => {
+          userId = userCredential.user.uid;
+          console.log("✅ Firebase 로그인 성공:", userId);
+        })
+        .catch((error) => {
+          console.error("❌ Firebase 로그인 실패:", error);
         });
 
-        // ========================================
-        // Unity WebGL 로더
-        // ========================================
-        let unityInstance = null;
+      // ========================================
+      // Unity WebGL 로더
+      // ========================================
+      let unityInstance = null;
 
-        var buildUrl = "UnityBuild/Build";
-        var loaderUrl = buildUrl + "/UnityBuild.loader.js";
-        var config = {
-            dataUrl: buildUrl + "/UnityBuild.data",
-            frameworkUrl: buildUrl + "/UnityBuild.framework.js",
-            codeUrl: buildUrl + "/UnityBuild.wasm",
-            streamingAssetsUrl: "StreamingAssets",
-            companyName: "YourCompany",
-            productName: "PlanitHideout",
-            productVersion: "1.0",
+      var buildUrl = "UnityBuild/Build";
+      var loaderUrl = buildUrl + "/UnityBuild.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/UnityBuild.data",
+        frameworkUrl: buildUrl + "/UnityBuild.framework.js",
+        codeUrl: buildUrl + "/UnityBuild.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "YourCompany",
+        productName: "PlanitHideout",
+        productVersion: "1.0",
+      };
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(document.querySelector("#unity-canvas"), config)
+          .then((instance) => {
+            unityInstance = instance;
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("unity-canvas").style.display = "block";
+            console.log("✅ Unity 로드 완료");
+          })
+          .catch((message) => {
+            alert("Unity 로드 실패: " + message);
+          });
+      };
+      document.body.appendChild(script);
+
+      // ========================================
+      // Unity ↔ JavaScript 통신
+      // ========================================
+
+      // Unity에서 호출: 그리드 좌표 저장 (새 버전)
+      function SaveFurnitureGridPosition(furnitureId, gridX, gridY, gridZ) {
+        if (!userId) {
+          console.warn("⚠️ 로그인 대기 중...");
+          return;
+        }
+
+        const gridPosition = {
+          gridX: gridX,
+          gridY: gridY,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
         };
 
-        var script = document.createElement("script");
-        script.src = loaderUrl;
-        script.onload = () => {
-            createUnityInstance(document.querySelector("#unity-canvas"), config).then((instance) => {
-                unityInstance = instance;
-                document.getElementById("loading").style.display = "none";
-                document.getElementById("unity-canvas").style.display = "block";
-                console.log("✅ Unity 로드 완료");
-            }).catch((message) => {
-                alert("Unity 로드 실패: " + message);
-            });
+        db.collection("users")
+          .doc(userId)
+          .collection("furniture")
+          .doc(furnitureId)
+          .set(gridPosition)
+          .then(() => {
+            console.log(`✅ ${furnitureId} 그리드 저장: (${gridX}, ${gridY})`);
+          })
+          .catch((error) => {
+            console.error(`❌ ${furnitureId} 저장 실패:`, error);
+          });
+      }
+
+      // 레거시: 월드 좌표 저장 (사용 안 함)
+      function SaveFurniturePosition(furnitureId, posX, posY) {
+        if (!userId) {
+          console.warn("⚠️ 로그인 대기 중...");
+          return;
+        }
+
+        const position = {
+          x: posX,
+          y: posY,
+          lastUpdated: firebase.firestore.FieldValue.serverTimestamp(),
         };
-        document.body.appendChild(script);
 
-        // ========================================
-        // Unity ↔ JavaScript 통신
-        // ========================================
+        db.collection("users")
+          .doc(userId)
+          .collection("furniture")
+          .doc(furnitureId)
+          .set(position)
+          .then(() => {
+            console.log(`✅ ${furnitureId} 위치 저장: (${posX.toFixed(2)}, ${posY.toFixed(2)})`);
+          })
+          .catch((error) => {
+            console.error(`❌ ${furnitureId} 저장 실패:`, error);
+          });
+      }
 
-        // Unity에서 호출: 그리드 좌표 저장 (새 버전)
-        function SaveFurnitureGridPosition(furnitureId, gridX, gridY, gridZ) {
-            if (!userId) {
-                console.warn("⚠️ 로그인 대기 중...");
-                return;
-            }
-
-            const gridPosition = {
-                gridX: gridX,
-                gridY: gridY,
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            db.collection("users").doc(userId)
-                .collection("furniture").doc(furnitureId)
-                .set(gridPosition)
-                .then(() => {
-                    console.log(`✅ ${furnitureId} 그리드 저장: (${gridX}, ${gridY})`);
-                })
-                .catch(error => {
-                    console.error(`❌ ${furnitureId} 저장 실패:`, error);
-                });
+      // Unity에서 호출: 가구 위치 로드 요청
+      function LoadFurniturePosition(furnitureId) {
+        if (!userId || !unityInstance) {
+          console.warn("⚠️ 준비 중...");
+          return;
         }
 
-        // 레거시: 월드 좌표 저장 (사용 안 함)
-        function SaveFurniturePosition(furnitureId, posX, posY) {
-            if (!userId) {
-                console.warn("⚠️ 로그인 대기 중...");
-                return;
-            }
+        db.collection("users")
+          .doc(userId)
+          .collection("furniture")
+          .doc(furnitureId)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              const data = doc.data();
 
-            const position = {
-                x: posX,
-                y: posY,
-                lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            db.collection("users").doc(userId)
-                .collection("furniture").doc(furnitureId)
-                .set(position)
-                .then(() => {
-                    console.log(`✅ ${furnitureId} 위치 저장: (${posX.toFixed(2)}, ${posY.toFixed(2)})`);
-                })
-                .catch(error => {
-                    console.error(`❌ ${furnitureId} 저장 실패:`, error);
+              // 그리드 좌표로 저장된 경우
+              if (data.gridX !== undefined && data.gridY !== undefined) {
+                const jsonData = JSON.stringify({
+                  id: furnitureId,
+                  gridX: data.gridX,
+                  gridY: data.gridY,
                 });
-        }
 
-        // Unity에서 호출: 가구 위치 로드 요청
-        function LoadFurniturePosition(furnitureId) {
-            if (!userId || !unityInstance) {
-                console.warn("⚠️ 준비 중...");
-                return;
-            }
-
-            db.collection("users").doc(userId)
-                .collection("furniture").doc(furnitureId)
-                .get()
-                .then(doc => {
-                    if (doc.exists) {
-                        const data = doc.data();
-
-                        // 그리드 좌표로 저장된 경우
-                        if (data.gridX !== undefined && data.gridY !== undefined) {
-                            const jsonData = JSON.stringify({
-                                id: furnitureId,
-                                gridX: data.gridX,
-                                gridY: data.gridY
-                            });
-
-                            unityInstance.SendMessage('FurnitureManager', 'SetFurniturePosition', jsonData);
-                            console.log(`📥 ${furnitureId} 그리드 위치 로드: (${data.gridX}, ${data.gridY})`);
-                        }
-                        // 레거시: 월드 좌표로 저장된 경우
-                        else if (data.x !== undefined && data.y !== undefined) {
-                            const jsonData = JSON.stringify({
-                                id: furnitureId,
-                                x: data.x,
-                                y: data.y
-                            });
-
-                            unityInstance.SendMessage('FurnitureManager', 'SetFurniturePosition', jsonData);
-                            console.log(`📥 ${furnitureId} 위치 로드: (${data.x.toFixed(2)}, ${data.y.toFixed(2)})`);
-                        }
-                    } else {
-                        console.log(`ℹ️ ${furnitureId} 저장된 위치 없음`);
-                    }
-                })
-                .catch(error => {
-                    console.error(`❌ ${furnitureId} 로드 실패:`, error);
+                unityInstance.SendMessage("FurnitureManager", "SetFurniturePosition", jsonData);
+                console.log(`📥 ${furnitureId} 그리드 위치 로드: (${data.gridX}, ${data.gridY})`);
+              }
+              // 레거시: 월드 좌표로 저장된 경우
+              else if (data.x !== undefined && data.y !== undefined) {
+                const jsonData = JSON.stringify({
+                  id: furnitureId,
+                  x: data.x,
+                  y: data.y,
                 });
-        }
+
+                unityInstance.SendMessage("FurnitureManager", "SetFurniturePosition", jsonData);
+                console.log(
+                  `📥 ${furnitureId} 위치 로드: (${data.x.toFixed(2)}, ${data.y.toFixed(2)})`
+                );
+              }
+            } else {
+              console.log(`ℹ️ ${furnitureId} 저장된 위치 없음`);
+            }
+          })
+          .catch((error) => {
+            console.error(`❌ ${furnitureId} 로드 실패:`, error);
+          });
+      }
     </script>
-</body>
-
+  </body>
 </html>
