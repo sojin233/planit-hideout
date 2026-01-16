@@ -4,13 +4,10 @@
   font-weight: 400;
 }
 body {
-  background-color: var(--color-light-1);
+  background-color: #fafafa;
   word-wrap: break-word;
   word-break: keep-all;
   overflow: visible;
-  font-size: 16rem;
-  font-weight: 500;
-  line-height: 1.4;
 }
 .wrap {
   max-width: 1400px;
@@ -19,3 +16,133 @@ body {
   z-index: 1;
 }
 
+/* ================================ header ============================== */
+header {
+  background-color: #fafafa;
+  border-bottom: 1px solid #dddddd;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+}
+header nav {
+}
+header nav button {
+  width: 30px;
+  height: 30px;
+}
+header nav button i {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+header .user_name p {
+  font-size: 18px;
+  line-height: 30px;
+}
+header .notification_box {
+}
+header .notification_box button {
+  width: 30px;
+  height: 30px;
+}
+header .notification_box button i {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+/* ================================ section ============================== */
+section {
+  padding: 100px 20px;
+}
+section .list_wrap {
+}
+section .list_wrap ul li a {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  border: 1px solid #b9b9b9;
+  background-color: #fff;
+  padding: 16px;
+  border-radius: 20px;
+}
+section .list_wrap ul li:nth-child(n + 2) {
+  margin-top: 20px;
+}
+section .list_wrap ul li .room_img {
+  width: 30%;
+  border: 1px solid #b9b9b9;
+  border-radius: 20px;
+}
+section .list_wrap ul li .room_img img {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: cover;
+}
+section .list_wrap ul li .room_content {
+}
+section .list_wrap ul li .user_name p {
+  font-size: 20px;
+  font-weight: 700;
+}
+section .list_wrap ul li .user_sub_txt {
+  margin-top: 8px;
+}
+section .list_wrap ul li .user_sub_txt span {
+  font-size: 16px;
+  display: inline-block;
+  width: 100%;
+}
+section .list_wrap ul li .user_sub_txt span:nth-child(n + 2) {
+  margin-top: 4px;
+}
+section .list_wrap ul li .user_img {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+section .list_wrap ul li .user_img img {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+/* ================================ footer ============================== */
+footer {
+}
+footer .btn_add {
+  display: flex;
+  justify-content: center;
+}
+footer .btn_add button {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  bottom: 30px;
+  border-radius: 50%;
+  background-color: #d4d4d4;
+}
+footer .btn_add button i {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+/* ================================ icon ============================== */
+.icon_menu.black {
+  background-image: url(../image/icon/icon_menu_black.png);
+}
+.icon_notification.black {
+  background-image: url(../image/icon/icon_notifications_black.png);
+}
+.icon_add.black {
+  background-image: url(../image/icon/icon_add_black.png);
+}
