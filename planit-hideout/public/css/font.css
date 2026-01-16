@@ -1,0 +1,38 @@
+@font-face {
+  font-family: "SeoulNamsan";
+  font-style: "Thin";
+  font-weight: 100;
+  src: url("/font/SeoulNamsanL.ttf") format("truetype");
+}
+@font-face {
+  font-family: "SeoulNamsan";
+  font-style: "Regular";
+  font-weight: 400;
+  src: url(/font/SeoulNamsanM.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SeoulNamsan";
+  font-style: "Medium";
+  font-weight: 500;
+  src: url(/font/SeoulNamsanB.ttf) format("truetype");
+}
+@font-face {
+  font-family: "SeoulNamsan";
+  font-style: "Bold";
+  font-weight: 700;
+  src: url(/font/SeoulNamsanEB.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Alexandria";
+  font-style: "Bold";
+  font-weight: 700;
+  src: url(/font/Alexandria-Bold.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "Alexandria";
+  font-style: "Black";
+  font-weight: 900;
+  src: url(/font/Alexandria-Black.ttf) format("truetype");
+}
